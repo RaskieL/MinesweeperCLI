@@ -9,7 +9,7 @@ public class Grid {
     private final long seed;
     private final int size;
     private int totalBombs;
-    private int remainingFlags;
+    private int totalFlags;
 
     private boolean[][] bombMap;
     private byte[][] proximityMap;
@@ -67,7 +67,6 @@ public class Grid {
             }
         }
         totalBombs = nBomb;
-        remainingFlags = totalBombs - 1;
 
         proximityMap = new byte[size][size];
         // Place proximity bomb tellers
@@ -141,15 +140,15 @@ public class Grid {
         grid.append(String.format("SEED: %d %n", seed));
         grid.append("   ");
         for(int k = 0; k < size; k++){
-            grid.append(String.format("  %d ", k));
+            grid.append(String.format("  %s%d", k >= 10 ? "" : " ", k));
         }
-        grid.append("\n   ");
+        grid.append(String.format("\n   %s", size >= 10 ? " " : ""));
         for(int k = 0; k < size * 4 + 1; k++){
             grid.append("-");
         }
         grid.append("\n");
         for(int y = 0; y < size; y++){
-            grid.append(String.format(" %d |", y));
+            grid.append(String.format(" %d%s |", y, y < 10 ? " " : ""));
             for(int x = 0; x < size; x++){
                 if(!bombMap[y][x] && isDiscoveredMap[y][x]){
                     grid.append(String.format(" %s ", Byte.toString((proximityMap[y][x]))));
@@ -160,13 +159,14 @@ public class Grid {
                 }
                 grid.append("|");
             }
-            grid.append("\n   ");
+            grid.append(String.format("\n   %s", size >= 10 ? " " : ""));
             for(int k = 0; k < size * 4 + 1; k++){
                 grid.append("-");
             }
             grid.append("\n");
         }
-        grid.append(String.format("Flags remaining %d", remainingFlags));
+        grid.append(String.format("Total bombs %d %n", totalBombs));
+        grid.append(String.format("Number of flags placed %d", totalFlags));
         return grid.toString();
     }
 
@@ -215,11 +215,67 @@ public class Grid {
     }
 
     public void setFlag(int x, int y){
-        if(isDiscoveredMap[y][x] || remainingFlags <= 0) return;
+        if(isDiscoveredMap[y][x]) return;
 
-        if(this.flagMap[y][x]) remainingFlags++;
-        else remainingFlags--;
+        if(this.flagMap[y][x]) totalFlags--;
+        else totalFlags++;
 
         this.flagMap[y][x] = !this.flagMap[y][x];
+    }
+
+    public long getSeed() {
+        return seed;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public int getTotalBombs() {
+        return totalBombs;
+    }
+
+    public void setTotalBombs(int totalBombs) {
+        this.totalBombs = totalBombs;
+    }
+
+    public int getTotalFlags() {
+        return totalFlags;
+    }
+
+    public void setTotalFlags(int totalFlags) {
+        this.totalFlags = totalFlags;
+    }
+
+    public boolean[][] getBombMap() {
+        return bombMap;
+    }
+
+    public void setBombMap(boolean[][] bombMap) {
+        this.bombMap = bombMap;
+    }
+
+    public byte[][] getProximityMap() {
+        return proximityMap;
+    }
+
+    public void setProximityMap(byte[][] proximityMap) {
+        this.proximityMap = proximityMap;
+    }
+
+    public boolean[][] getIsDiscoveredMap() {
+        return isDiscoveredMap;
+    }
+
+    public void setIsDiscoveredMap(boolean[][] isDiscoveredMap) {
+        this.isDiscoveredMap = isDiscoveredMap;
+    }
+
+    public boolean[][] getFlagMap() {
+        return flagMap;
+    }
+
+    public void setFlagMap(boolean[][] flagMap) {
+        this.flagMap = flagMap;
     }
 }

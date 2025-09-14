@@ -21,7 +21,7 @@ public class Player {
         int x;
         int y;
         switch(parsed[0].toLowerCase()){
-            case "f":
+            case "f" -> {
                 if(parsed.length < 3) return GameCode.PASS;
                 try {
                     x = Integer.parseInt(parsed[1]);
@@ -30,23 +30,27 @@ public class Player {
                     return GameCode.PASS;
                 }
                 grid.setFlag(x, y);
-            return GameCode.OK;
+                return GameCode.OK;
+            }
 
-            case "d":
+            case "d" -> {
                 if(parsed.length < 3) return GameCode.PASS;
-                    try {
-                        x = Integer.parseInt(parsed[1]);
-                        y = Integer.parseInt(parsed[2]);
-                    } catch (NumberFormatException e) {
-                        return GameCode.PASS;
-                    }
-                    return grid.playerDiscoversTile(x, y);
+                try {
+                    x = Integer.parseInt(parsed[1]);
+                    y = Integer.parseInt(parsed[2]);
+                } catch (NumberFormatException e) {
+                    return GameCode.PASS;
+                }
+                return grid.playerDiscoversTile(x, y);
+            }
 
-            case "r":
-            return GameCode.RESET;
+            case "r" -> {
+                return GameCode.RESET;
+            }
 
-            default:
-            return GameCode.PASS;
+            default -> {
+                return GameCode.PASS;
+            }
         }
     }
 
