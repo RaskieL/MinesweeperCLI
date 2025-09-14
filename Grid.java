@@ -109,15 +109,15 @@ public class Grid {
         grid.append(String.format("SEED: %d %n", seed));
         grid.append("   ");
         for(int k = 0; k < size; k++){
-            grid.append(String.format("  %d ", k));
+            grid.append(String.format("  %s%d", k >= 10 ? "" : " ", k));
         }
-        grid.append("\n   ");
+        grid.append(String.format("\n   %s", size >= 10 ? " " : ""));
         for(int k = 0; k < size * 4 + 1; k++){
             grid.append("-");
         }
         grid.append("\n");
         for(int y = 0; y < size; y++){
-            grid.append(String.format(" %d |", y));
+            grid.append(String.format(" %d%s |", y, y < 10 ? " " : ""));
             for(int x = 0; x < size; x++){
                 if(bombMap[y][x]){
                     grid.append(" B ");
@@ -126,7 +126,7 @@ public class Grid {
                 }
                 grid.append("|");
             }
-            grid.append("\n   ");
+            grid.append(String.format("\n   %s", size >= 10 ? " " : ""));
             for(int k = 0; k < size * 4 + 1; k++){
                 grid.append("-");
             }
