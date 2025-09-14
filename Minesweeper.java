@@ -1,14 +1,16 @@
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.time.Clock;
+import java.util.Random;
 
 
 class Minesweeper {
     public static void main(String[] args) {
-        if(args.length != 1){
-            System.err.println("Usage: Minesweeper grid_size");
+        Random rnd = new Random();
+        long seed = rnd.nextLong();
+
+        if(args.length < 1){
+            System.err.println("Usage: Minesweeper grid_size OPTIONAL:seed");
             return;
         }
 
@@ -21,18 +23,26 @@ class Minesweeper {
             return;
         }
 
-        Grid grid = new Grid(gridSize);
+        if(args.length >= 2){
+            try {
+                seed = Integer.parseInt(args[1]);
+            } catch (NumberFormatException e) {
+                String s = "";
+                for(String c : args[1].split("")){
+                    s += (int)(c.toCharArray()[0] - '0');
+                    if(s.length() > 6){
+                        s = String.valueOf(Long.parseLong(s) % Integer.MAX_VALUE);
+                    }
+                }
+                seed = Long.parseLong(s);
+            }
+        }
+
+        var grid = new Grid(gridSize, seed);
         Player player = new Player("Maiken");
 
 
-        try {
-            BufferedWriter fs = new BufferedWriter(new FileWriter("currentGameSpoiler.txt"));
-            fs.write(grid.toString());
-            fs.close();
-        } catch (IOException e) {
-            System.err.println("IOException: writing to file error");
-            System.exit(-1);
-        }
+        printSolutionToFile(grid);
 
         Clock clock = Clock.systemDefaultZone();
         long startTime = clock.millis();
@@ -42,19 +52,35 @@ class Minesweeper {
                 case OK:
                     continue;
                 case PASS:
+                    System.out.println("Invalid entry, passing.");
                     continue;
                 case DEATH:
                 System.out.println("YOU LOSE !");
                 System.exit(0);
 
                 case RESET:
-                    grid = new Grid(gridSize);
+                    printSolutionToFile(grid);
+                    seed = rnd.nextInt();
+                    startTime = clock.millis();
+                    grid = new Grid(gridSize, seed);
                     continue;
                 case WIN:
-                System.out.println(String.format("YOU WIN %s !%nScore: %d", player.getName(), (grid.getPlayerScore() - ((clock.millis() - startTime) / 1000))));
+                System.out.println(String.format("YOU WIN %s !%nScore: %d", player.getName(), (grid.getPlayerScore() - ((clock.millis() - startTime) / 2000))));
                 System.exit(0);
             }
         }
         
     }
+
+    public static void printSolutionToFile(Grid grid){
+        try {
+            try (BufferedWriter fs = new BufferedWriter(new FileWriter("currentGameSpoiler.txt"))) {
+                fs.write(grid.toString());
+            }
+        } catch (IOException e) {
+            System.err.println("IOException: writing to file error");
+            System.exit(-1);
+        }
+    }
 }
+

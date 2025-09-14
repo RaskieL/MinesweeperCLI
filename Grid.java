@@ -2,8 +2,11 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Random;
 
 public class Grid {
+
+    private final long seed;
     private final int size;
     private int totalBombs;
     private int remainingFlags;
@@ -13,9 +16,10 @@ public class Grid {
     private boolean[][] isDiscoveredMap;
     private boolean[][] flagMap;
 
-    Grid(int sz){
-        this.size = sz;
-        this.totalBombs = (int)Math.pow(sz, 2) / 6;
+    Grid(int size, long seed){
+        this.size = size;
+        this.seed = seed;
+        this.totalBombs = (int)Math.pow(size, 2) / 6;
 
         this.bombMapInit();
     }
@@ -46,6 +50,7 @@ public class Grid {
     }
 
     private void bombMapInit(){
+        Random rnd = new Random(seed);
         bombMap = new boolean[size][size];
         int nBomb = 0;
 
@@ -53,7 +58,7 @@ public class Grid {
             // Placing bombs on the grid
             for(int y = 0; y < this.size; y++){
                 for( int x = 0; x < this.size; x++){
-                    if(Math.random() >= 0.95){
+                    if(rnd.nextFloat() >= 0.95){
                         bombMap[y][x] = true;
                         if(nBomb++ >= totalBombs) break;
                     }
@@ -101,6 +106,7 @@ public class Grid {
     @Override
     public String toString(){
         StringBuilder grid = new StringBuilder();
+        grid.append(String.format("SEED: %d %n", seed));
         grid.append("   ");
         for(int k = 0; k < size; k++){
             grid.append(String.format("  %d ", k));
@@ -132,6 +138,7 @@ public class Grid {
     public String displayPlayGrid(){
         StringBuilder grid = new StringBuilder();
 
+        grid.append(String.format("SEED: %d %n", seed));
         grid.append("   ");
         for(int k = 0; k < size; k++){
             grid.append(String.format("  %d ", k));
@@ -171,8 +178,6 @@ public class Grid {
         List<int[]> searched = new ArrayList<>();
         Queue<int[]> toSearch = new ArrayDeque<>();
         toSearch.add(new int[]{x, y});
-
-        
 
         do {
             final int[] a = toSearch.poll();

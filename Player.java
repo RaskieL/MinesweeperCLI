@@ -2,10 +2,12 @@ import java.util.Scanner;
 
 public class Player {
     private final String name;
+    private int score;
     private final Scanner scanner;
 
     public Player(String name){
         this.name = name;
+        score = 0;
         scanner = new Scanner(System.in);
     }
 
@@ -46,5 +48,13 @@ public class Player {
             default:
             return GameCode.PASS;
         }
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 }
