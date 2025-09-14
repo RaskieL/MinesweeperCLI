@@ -50,7 +50,7 @@ public class Bot {
                                 n++;
                                 continue;
                             }
-                            if (!flagMap[ny][nx] && !isDiscoveredMap[ny][nx]) {
+                            if (!isDiscoveredMap[ny][nx]) {
                                 buffer.add(new int[]{ny, nx});
                                 if(n++ > discoveredProx) break;
                             }
